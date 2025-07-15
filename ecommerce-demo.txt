@@ -1,0 +1,47 @@
+composer create-project laravel/laravel ecommerce-demo "10.*"
+
+
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=olist_ecommerce
+DB_USERNAME=postgres
+DB_PASSWORD=your_password
+
+
+composer require laravel/breeze --dev
+php artisan breeze:install
+
+npm install
+npm run dev
+
+php artisan migrate
+
+Sử dụng docker để khởi chạy dự án (WSL của windows)
+-------------------------------------
+
+curl -s "https://laravel.build/ecommerce-demo?with=mysql,redis" | bash
+
+
+npm install vite@^5.0.0 laravel-vite-plugin@^1.0.0 --save-dev
+npm install tailwindcss@^3.0 postcss autoprefixer --save-dev
+
+
+docker exec -it ecommerce-demo-laravel.test-1 php artisan make:model Product
+
+cd /mnt/d/Learning/Laravel/ecommerce-demo
+./vendor/bin/sail up -d
+./vendor/bin/sail npm run dev
+
+Nếu dự án đã có:
+composer require laravel/sail --dev
+php artisan sail:install
+
+ Một số lệnh thường dùng với Sail
+Mục đích	Lệnh
+Chạy server	sail up -d
+Dừng container	sail down
+Chạy artisan	sail artisan migrate
+Chạy composer	sail composer install
+Truy cập shell	sail shell
+Chạy queue	sail artisan queue:work

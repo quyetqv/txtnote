@@ -1,0 +1,22 @@
+// pgsql cli thêm vào biến môi trường của windows\
+Tạo tables từ câu lệnh tạo bảng
+
+psql -U postgres -d olist_ecommerce -f "C:\Users\<username>\Documents\create_tables.sql"
+
+// Đăng nhập để import dữ liệu
+psql -U postgres -d olist_ecommerce
+
+
+\copy orders FROM 'C:/Users/QUYETQV/Downloads/archive/olist_orders_dataset.csv' DELIMITER ',' CSV HEADER;
+\copy customers FROM 'C:/Users/QUYETQV/Downloads/archive/olist_customers_dataset.csv' DELIMITER ',' CSV HEADER;
+\copy order_items FROM 'C:/Users/QUYETQV/Downloads/archive/olist_order_items_dataset.csv' DELIMITER ',' CSV HEADER;
+\copy order_payments FROM 'C:/Users/QUYETQV/Downloads/archive/olist_order_payments_dataset.csv' DELIMITER ',' CSV HEADER;
+\copy order_reviews FROM 'C:/Users/QUYETQV/Downloads/archive/olist_order_reviews_dataset.csv' DELIMITER ',' CSV HEADER;
+\copy products FROM 'C:/Users/QUYETQV/Downloads/archive/olist_products_dataset.csv' DELIMITER ',' CSV HEADER;
+\copy sellers FROM 'C:/Users/QUYETQV/Downloads/archive/olist_sellers_dataset.csv' DELIMITER ',' CSV HEADER;
+\copy geolocation FROM 'C:/Users/QUYETQV/Downloads/archive/olist_geolocation_dataset.csv' DELIMITER ',' CSV HEADER;
+\copy product_category_name_translation FROM 'C:/Users/QUYETQV/Downloads/archive/product_category_name_translation.csv' DELIMITER ',' CSV HEADER;
+
+
+// Kiểm tra lại dữ liệu đã import
+SELECT COUNT(*) FROM orders;
