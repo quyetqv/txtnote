@@ -1,0 +1,202 @@
+Ubuntu commands:
+-----------------------------------------
+
+sudo apt update
+sudo apt install docker.io docker-compose -y
+sudo usermod -aG docker ubuntu
+
+
+sudo ufw allow 'Apache Full'
+sudo ufw allow 'Apache'
+sudo ufw status
+
+
+Quá trình CI/CD bằng tay: 
+---------------------------------------------------------------
+sudo apt install apache2 -y
+sudo systemctl restart apache2
+sudo systemctl status apache2
+
+sudo apt install php libapache2-mod-php php-mysql php-mbstring php-xml php-cli -y
+# libapache2-mod-php là module PHP cho Apache.
+# php-mysql, php-mbstring, php-xml là các extension phổ biến, bạn có thể thêm/bớt tùy nhu cầu.
+
+sudo apt-get update
+sudo apt-get install php8.3-fpm
+
+git clone <repo-url>
+sudo chmod -R 755 /var/www/html/test-ci-cd-php
+sudo chown -R ubuntu:ubuntu /var/www/my-php-app # Đổi quyền sở hữu để bạn dễ dàng làm việc
+
+ssh-keygen -t rsa -b 4096 -C "github-actions-deploy-key-for-ec2" -f ~/.ssh/github-actions-ec2-key
+    Lệnh này sẽ tạo ra hai file:
+
+        ~/.ssh/github-actions-ec2-key (Đây là private key của bạn)
+
+        ~/.ssh/github-actions-ec2-key.pub (Đây là public key của bạn)
+		
+		cat /home/quyetqv/.ssh/github-actions-ec2-key.pub
+		
+		ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDkMvBWPUxcjxIg7Jne6qTGEC2J7DMq1g/lKxnzbsNCMN6k2UYuP5w44qfkKQbnNumXBr+revsWM1SY+pjQLqjzND6nkxXdcZH/XEJIPHQh3V84rMtR45V/EVra6O+dPERz4ZU3dQs+HTIjGNUoFIfQVs+ptlKxscCX98A9aZv5IxCgRKSFrlNt9/XKbXYyXD3ucPtiddirwgJT7ek4hWFyE76kXSrlwbq031gNORL4MzVxn3SxuZiszDApWfZt1uWrqf5E7YUr3g/oQzxb4t+dR/p/rZs8CL88H7kxiNDURTZ9ib+d+xGZoH9uOBpY56nEQfO6tWzYx48vOm3WqKeWLVEXbIuiNeLZr14z4GuzCbuJOX3S08Cx2JH0Dgtw10GwO04OdMAc+GbngUM9dW7ZAyRQvh2KZonmu0HnUFneUKF1d4ZCEujxHlXPPy0ns4p//qLWxnuye7v71wVEXYI7MYI/j76ZoCGM0YYbVvilwE4gD0oVuOAgeZ4c1KbsKIWdETQW/QLyD9BxBY3E0puApl2gXclXmjKmaCtRCNPJ20OhKy5xfy0Ple3wnlFHGBhTkgYGgiwuAnrcOBYDWMdhJVZ287Ein4192MuQV1fVD3hbXe8rHvUDJ9qeC9hquhYbohWTQ8a4MsHqM6OJol0WJr9qMp96XyE8gn8/GwNaeQ== github-actions-deploy-key-for-ec2
+		
+		cat /home/quyetqv/.ssh/github-actions-ec2-key
+
+Sao chép Private Key:
+
+    Mở file ~/.ssh/github-actions-ec2-key bằng trình soạn thảo văn bản.
+
+    Sao chép TOÀN BỘ nội dung của file này, bao gồm cả dòng -----BEGIN OPENSSH PRIVATE KEY----- và -----END OPENSSH PRIVATE KEY-----.
+
+Thêm Private Key vào GitHub Secrets:
+
+    Truy cập kho lưu trữ GitHub của bạn (ví dụ: my-php-ci-cd).
+
+    Vào Settings > Secrets and variables > Actions.
+
+    Nhấp vào nút New repository secret.
+
+    Name: Đặt tên là AWS_EC2_SSH_PRIVATE_KEY (đây sẽ là tên biến mà bạn dùng trong workflow).
+
+    Secret: Dán toàn bộ nội dung private key mà bạn đã sao chép vào đây.
+
+    Nhấp Add secret.
+
+Sao chép Public Key:
+
+    Mở file ~/.ssh/github-actions-ec2-key.pub bằng trình soạn thảo văn bản.
+
+    Sao chép TOÀN BỘ nội dung của file này.
+
+Thêm Public Key vào máy chủ EC2 của bạn:
+
+    SSH vào phiên bản EC2 của bạn bằng khóa .pem cá nhân của bạn (khóa bạn đã dùng để truy cập vào EC2 lần đầu).
+    Bash
+
+ssh -i ~/.ssh/my-php-key.pem ubuntu@<Public_IPv4_Address_của_EC2>
+
+ssh -i ./test-ci-cd-php.pem ubuntu@13.250.1.39
+
+
+Sau khi đã SSH vào, mở file ~/.ssh/authorized_keys của người dùng ubuntu (hoặc tên người dùng bạn đang sử dụng trên EC2):
+Bash
+
+nano ~/.ssh/authorized_keys
+
+Dán toàn bộ nội dung của public key mà bạn đã sao chép (từ file github-actions-ec2-key.pub) vào một dòng mới trong file này.
+
+Lưu và đóng file (Ctrl+X, Y, Enter).
+
+Hoặc copy từ local bằng cách : cat deploy_key.pub | ssh -i your-aws-key.pem ubuntu@<EC2_PUBLIC_IP> 'cat >> ~/.ssh/authorized_keys'
+
+Đảm bảo quyền hạn của file authorized_keys là 600:
+Bash
+
+        chmod 600 ~/.ssh/authorized_keys
+
+
+
+
+
+CI/CD khi sử dụng Docker:
+-----------------------------------------
+	Cài Docker xong cần set quyền
+	
+	sudo docker ps
+	sudo usermod -aG docker $USER
+	
+
+	docker compose down
+	docker compose up --build -d
+
+
+	ls
+	docker compose logs laravel_app
+	
+	Bạn có thể chạy lệnh kiểm tra version PHP trong container:
+	docker exec -it laravel_app php -v
+
+	Set quyền trong Container
+	------------------------------
+	docker exec -it laravel_app bash
+	chown -R www-data:www-data storage bootstrap/cache
+	chmod -R 775 storage bootstrap/cache
+	exit
+
+
+	2. Kiểm tra .env để xác định session driver
+
+	Mở file src/.env và kiểm tra dòng:
+
+	SESSION_DRIVER=database
+
+	Nếu bạn chưa muốn dùng database cho session, bạn có thể đổi thành:
+
+	SESSION_DRIVER=file
+	
+	
+	
+	
+	
+	// Cài đặt docker plugin nếu câu lệnh docker compose up/down không chạy được, phải đọc log mới biết
+	
+	 Cách khắc phục: Cài Docker Compose plugin (cách chính thức)
+	✨ Bước 1: Tạo thư mục plugin
+
+	mkdir -p ~/.docker/cli-plugins
+	
+	✨ Bước 2: Tải Docker Compose binary
+
+	curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
+	  -o ~/.docker/cli-plugins/docker-compose
+
+	✨ Bước 3: Cấp quyền thực thi
+
+	chmod +x ~/.docker/cli-plugins/docker-compose
+
+	✨ Bước 4: Kiểm tra đã cài thành công chưa
+
+	docker compose version
+
+	→ Nếu kết quả là:
+
+	Docker Compose version v2.x.x
+
+	→ ✅ Bạn đã cài thành công và có thể chạy:
+
+	docker compose up -d
+
+	
+	
+	Ý nghĩa của các thành phần khi CI/CD sử dụng Docker
+------------------------------------------------------------
+	1. docker-compose.yml
+		Định nghĩa toàn bộ hệ thống các container cần thiết để chạy ứng dụng Laravel.
+			app	Chạy Laravel (php artisan serve)
+			mysql	Chạy database MySQL
+			nginx	Chạy web server để route request đến Laravel
+			node	Chạy frontend npm run dev (nếu dùng Vite)
+			volumes	Liên kết code trên máy với trong container
+			ports	Mở cổng để bạn truy cập từ trình duyệt (localhost:8000, 9000,...)
+			✅ Giúp bạn chỉ cần chạy docker compose up -d là khởi động toàn bộ hệ thống.
+	2. Dockerfile
+		Tạo ra môi trường PHP (Laravel) trong container app.
+			FROM php:8.2-fpm	Dùng image PHP làm nền
+			RUN apt-get ...	Cài các PHP extension cần thiết cho Laravel
+			COPY composer	Cài đặt Composer vào container
+			WORKDIR /var/www	Thiết lập thư mục làm việc mặc định
+			Giúp bạn đóng gói môi trường Laravel chuẩn → chạy được ở mọi máy, mọi server, không lo sai version.
+	3. .github/workflows/deploy.yml
+		on: push to main	Tự động chạy CI/CD khi push code
+		checkout	Lấy source code từ GitHub
+		add ssh key	Dùng SSH kết nối tới EC2
+		rsync	Copy mã nguồn lên EC2
+		docker compose down/up	Dựng lại các container Laravel
+		composer install	Cài thư viện PHP trong container
+		php artisan migrate	Chạy migrate database trên EC2
+		fix permissions	Cấp quyền ghi cho storage/, cache/
+		 Giúp bạn triển khai code mới lên server tự động, không cần SSH thủ công.
+		 
+		 
+		docker-compose.yml	Xây dựng hệ thống Laravel từ các container (PHP, MySQL, Nginx, Node...)	Khi chạy/stop project
+		Dockerfile	Xây dựng môi trường Laravel container (PHP + Composer + Extensions)	Khi cần build lại container Laravel
+		.github/workflows/deploy.yml	Triển khai Laravel lên server EC2 tự động qua GitHub Actions

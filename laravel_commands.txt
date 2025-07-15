@@ -1,0 +1,246 @@
+
+
+composer global require "laravel/installer"
+
+composer create-project --prefer-dist laravel/laravel blog "5.8.*"
+
+--------------------------------------
+Artisan commands :
+--------------------------------------
+https://quickadminpanel.com/blog/list-of-21-artisan-make-commands-with-parameters/
+
+make:channel Create a new channel class
+make:command Create a new Artisan command
+make:controller Create a new controller class
+make:event Create a new event class
+make:exception Create a new custom exception class
+make:factory Create a new model factory
+make:job Create a new job class
+make:listener Create a new event listener class
+make:mail Create a new email class
+make:middleware Create a new middleware class
+make:migration Create a new migration file
+make:model Create a new Eloquent model class
+make:notification Create a new notification class
+make:observer Create a new observer class
+make:policy Create a new policy class
+make:provider Create a new service provider class
+make:request Create a new form request class
+make:resource Create a new resource
+make:rule Create a new validation rule
+make:seeder Create a new seeder class
+make:test Create a new test class
+
+-----------------------------------
+
+$out = new \Symfony\Component\Console\Output\ConsoleOutput();
+
+$out->writeln("login content = ".$content);
+
+
+--------------------------------------
+php artisan serve <= start server
+
+ 
+
+php artisan make:migration create_request_quotation_table --create=request_quotation
+
+-----------------------------------
+php artisan make:model User --migration --controller --resource
+php artisan make:model User -m
+
+php artisan migrate --path=database/migrations/2020_02_03_133406_create_posts_table.php
+
+php artisan make:migration add_votes_to_users_table --table=users
+
+ 
+
+Để build lại migration sử dụng câu lệnh : composer dump-autoload
+
+Để chạy build lại data hiện tại sửa dụng 2 câu lệnh:
+
+php artisan migate:refresh
+
+php artisan db:seed
+
+php artisan passport:install
+
+php artisan passport:client --password
+
+php artisan passport:client --password
+
+-----------------------------------------------
+
+Seeding
+
+----------------------------------------------
+
+ 
+	
+
+composer require doctrine/dbal:^2.12.1 <-- sử dụng hàm ->change() khi migration
+
+composer require laravel/socialite
+
+composer require coderello/laravel-passport-social-grant
+
+ 
+
+php artisan make:seed seederName <-- Tạo seeder cho 1 bảng nào đó
+DB::table('users')->insert(
+    ['name' => 'Nguyễn Văn A', 'email' => 'anv@gmail.com', 'votes' => 0]
+);
+
+php artisan db:seed <-- Tất cả
+
+php artisan db:seed --class=UserTableSeeder
+<-- Chỉ định rõ 1 seeder nào đó
+
+----------------------------------------------
+
+Custom provider
+
+----------------------------------------------
+
+php artisan make:provider ShowConsoleLogServiceProvider
+
+---------------------------------------------
+
+Clear cache
+
+----------------------------------------------
+
+php artisan cache:clear
+
+php artisan config:cache
+
+php artisan route:clear
+
+php artisan view:clear
+
+ 
+
+Link store
+
+---------------------------
+
+php artisan storage:link
+
+rm -rf vendor
+
+composer update # or composer install
+
+rm bootstrap/cache/config.php
+
+php artisan config:clear
+
+ 
+
+config:clear
+
+cache:clear
+
+config:cache
+
+-----------------------------------------------
+
+Build android:
+
+-------------------------------------------------
+
+php artisan serve --host=0.0.0.0
+
+Android Wifi ADB
+
+https://medium.com/android-news/connect-android-device-with-wifi-within-android-studio-3b1bc00c1e17
+
+ 
+
+Setup project when you cloned
+
+-----------------------------------------
+
+    Clone your project
+    Go to the folder application using
+    cd
+    command on your cmd or terminal
+    Run
+    composer install
+    on your cmd or terminal
+    npm install
+    Copy
+    .env.example
+    file to
+    .env
+    on the root folder. You can type
+    copy .env.example .env
+    if using command prompt Windows or
+    cp .env.example .env
+    if using terminal, Ubuntu
+    Open your
+    .env
+    file and change the database name (
+    DB_DATABASE
+    ) to whatever you have, username (
+    DB_USERNAME
+    ) and password (
+    DB_PASSWORD
+    ) field correspond to your configuration.
+    By default, the username is
+    root
+    and you can leave the password field empty. (This is for Xampp)
+    By default, the username is
+    root
+    and password is also
+    root
+    . (This is for Lamp)
+    Run
+    php artisan key:generate
+    Run
+    php artisan migrate
+    Run
+    php artisan serve
+    php artisan db:seed
+    Go to localhost:8000
+    https://devmarketer.io/learn/setup-laravel-project-cloned-github-com/
+
+Deploy project:
+
+composer install –no-dev
+
+THIS IS FOR LARAVEL 7 AND LARAVEL/PASSPORT 9.0
+
+The first thing is to run the
+php artisan passport:client --personal
+.
+
+Inside your database table oauth_clients, under column name, look for Laravel Personal Access Client.
+
+Copy the secret beside
+Laravel Personal Access Client
+.
+
+Open
+AuthServiceProvider
+, then paste the secret inside the boot method where the
+CLIENT_SECRET
+is below:
+
+Passport::personalAccessClientSecret(config('CLIENT_SECRET'));
+
+And don't forget to also add the ID of the secret from your database.
+
+Passport::personalAccessClientId(config('ID'));
+
+Note: Use the quote along with the ID and CLIENT_SECRET as config() is expected to get a string.
+
+-------------------------------------------------
+
+Cấu hình dùng để send mail:
+
+php artisan config:cache
+
+chrome://inspect/#devices
+npm run dev --host 0.0.0.0 --port 80
+php artisan serve --host=0.0.0.0
+
