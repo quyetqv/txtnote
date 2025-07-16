@@ -1,0 +1,67 @@
+public function store(StoreProfitSimulationRequest $request, Contract $contract)
+	{
+		$oldSimulationUpdatedAt = $contract->simulation?->updated_at ? $contract->simulation->updated_at : 'null';
+		
+      if(isset($contract->simulation) && $request->timestamp != $oldSimulationUpdatedAt){
+			throw new OptimisticLockException;
+		}
+
+		try {
+			DB::transaction(function() use($request, &$contract) {
+
+				$contract->power_usage?->update([
+					'unit_prediction' => $request->unit_prediction
+				]);
+
+				$simulation = Simulation::firstOrNew([
+               'contract_id'=> $contract->id,
+            ]);
+
+            $simulation->calc_years = $request->calc_years;
+
+				$simulation->facility_cost = $request->facility_cost;
+				$simulation->start_year = $request->start_year;
+				$simulation->maintenance_cost  = $request->maintenance_cost;
+				$simulation->insurance_premium = $request->insurance_premium;
+            $simulation->save();
+			});	
+		} catch (Exception $e) {
+			Log::error("--- Create - Update Profit Simulation Result Errors ---");
+			Log::error($e);
+
+			return redirect()->back()->with('message', $e->getMessage());
+		}
+
+		return to_route('profit-simulation.index', ['contract' => $contract])->with([
+         'success' => __('Saved.'),
+		]);
+	}
+	
+	
+	
+public function store(StoreLoanRepaymentRequest $request)
+    {
+        try {
+			DB::transaction(function() use($request) {
+
+                $pow = LoanRepayment::updateOrCreate(
+                    ['id' => $request->id ?? ''],
+                    [
+                        'contract_id' =>  $request->contract_id,
+                        'repayment_period' =>  $request->repayment_period,
+                        'loan_amount' =>  $request->loan_amount,
+                        'interest_rate' =>  json_decode(json_encode($request->interest_rate, JSON_FORCE_OBJECT), FALSE),
+                        'year_repayment' =>  json_decode(json_encode($request->year_repayment, JSON_FORCE_OBJECT), FALSE),
+                    ]
+                );
+			});
+		} catch (Exception $e) {
+			Log::error("--- Create Loan Repayment Errors ---");
+			Log::error($e);
+			
+            return ['success' => false];
+		}
+
+        return ['success' => true];
+
+    }

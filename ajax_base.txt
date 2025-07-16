@@ -1,0 +1,61 @@
+Response:
+---------------------------------------
+public function removeSurveySubject(Request $request)
+{
+	try {
+		DB::transaction(function () use ($request) {
+
+			SurveySubjects::where('id', '=', $request->id)->delete();
+	
+		});
+	} catch (Exception $e) {
+		Log::debug($e);
+
+		$response = ['success' => false, 'removeSurveySubjectMessage' => __('Deleting is failed.')];
+		if ($request->ajax()) {
+			return response()->json($response);
+		} else {
+			return redirect()->route('surveySubjects')->with($response);
+		}
+	}
+	
+	$response = ['success' => true, 'removeSurveySubjectMessage' => __('Deleted.')];
+	if ($request->ajax()) {
+		return response()->json($response);
+	} else {
+		return redirect()->route('surveySubjects')->with($response);
+	}
+	
+}
+
+Client:
+---------------------------------------------------
+$.ajax({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	   },
+		cache: false,
+		type:'POST',
+		url: '/survey/removeSurveySubjectFile',
+		data: data,
+		success: function(response) {
+			alert(response.removeSurveySubjectFileMessage);
+		},
+		error: function(xhr, status, error) {
+			console.log(error);
+			console.log(status);
+			console.log(xhr);
+
+			$(this).prop("disabled", false);
+			$(".btn-close-remove-survey-subject-file").prop("disabled", false);
+		},
+		complete: function() {
+			
+		}
+	}).then(function(response) {
+		$(this).prop("disabled", false);
+		$(".btn-close-remove-survey-subject-file").prop("disabled", false);
+
+		modalRemoveSurveySubjectFile.hide();
+		location.reload();
+	});
